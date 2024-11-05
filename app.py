@@ -310,17 +310,23 @@ def update_cart(item_id):
     quantity = int(request.form.get('quantity'))
     if quantity > cart_item.product.stock:
         return jsonify({
-            'error': f'Chỉ còn {cart_item.product.stock} sản phẩm trong kho!'
-        }), 400
-        
+        'error': f'Chỉ còn {cart_item.product.stock} sản phẩm trong kho!'
+    }), 400
+    
     cart_item.quantity = quantity
     db.session.commit()
     return jsonify({
-        'message': 'Updated successfully',
-        'subtotal': cart_item.product.price * quantity,
-        'total': sum(item.product.price * item.quantity 
-                    for item in current_user.cart_items)
-    })
+    'message': 'Updated successfully',
+    'subtotal': cart_item.product.price * quantity,
+    'total': sum(item.product.price * item.quantity 
+                for item in current_user.cart_items)
+})
+@app.template_filter('number_format')
+def number_format(value, decimal_places=2):
+    """Format a number to a specific number of decimal places."""
+    if value is not None:
+        return f"{value:,.{decimal_places}f}"
+    return value 
 
 @app.route('/cart/remove/<int:item_id>')
 @login_required
@@ -340,23 +346,23 @@ def checkout():
         return redirect(url_for('view_cart'))
         
     if request.method == 'POST':
-        # Kiểm tra lại số lượng tồn kho
+    # Kiểm tra lại số lượng tồn kho
         for item in cart_items:
             if item.quantity > item.product.stock:
                 flash(f'Sản phẩm {item.product.name} chỉ còn {item.product.stock} trong kho!', 'danger')
                 return redirect(url_for('checkout'))
-        
-        # Tạo đơn hàng
+    
+    # Tạo đơn hàng
         order = Order(
-            user_id=current_user.id,
-            shipping_address=request.form.get('address'),
-            phone=request.form.get('phone'),
-            note=request.form.get('note'),
-            total_amount=sum(item.product.price * item.quantity for item in cart_items)
+        user_id=current_user.id,
+        shipping_address=request.form.get('address'),
+        phone=request.form.get('phone'),
+        note=request.form.get('note'),
+        total_amount=sum(item.product.price * item.quantity for item in cart_items)
         )
         db.session.add(order)
-        
-        # Thêm chi tiết đơn hàng
+    
+    # Thêm chi tiết đơn hàng
         for cart_item in cart_items:
             order_item = OrderItem(
                 order_id=order.id,
@@ -365,17 +371,17 @@ def checkout():
                 price=cart_item.product.price
             )
             db.session.add(order_item)
-            
-            # Cập nhật số lượng tồn kho
-            cart_item.product.stock -= cart_item.quantity
-            
-            # Xóa item khỏi giỏ hàng
-            db.session.delete(cart_item)
         
+        # Cập nhật số lượng tồn kho
+            cart_item.product.stock -= cart_item.quantity
+        
+        # Xóa item khỏi giỏ hàng
+            db.session.delete(cart_item)
+    
         db.session.commit()
         flash('Đặt hàng thành công!', 'success')
         return redirect(url_for('view_orders'))
-        
+    
     total = sum(item.product.price * item.quantity for item in cart_items)
     return render_template('checkout.html', cart_items=cart_items, total=total)
 

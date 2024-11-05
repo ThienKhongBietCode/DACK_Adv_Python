@@ -1,47 +1,49 @@
+{# orders.html #}
 {% extends "base.html" %}
+
 {% block content %}
-<h2>My Orders</h2>
-{% if orders %}
-    {% for order in orders %}
-    <div class="card mb-3">
-        <div class="card-header">
-            <strong>Order #{{ order.id }}</strong>
-            <span class="float-end">{{ order.date_ordered.strftime('%Y-%m-%d %H:%M:%S') }}</span>
+<div class="container py-4">
+    <h2 class="mb-4">Đơn hàng của bạn</h2>
+    
+    {% if orders %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Mã đơn hàng</th>
+                        <th>Ngày đặt</th>
+                        <th>Tổng tiền</th>
+                        <th>Trạng thái</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td>#{{ order.id }}</td>
+                        <td>{{ order.created_at.strftime('%d/%m/%Y %H:%M') }}</td>
+                        <td>{{ "{:,.0f}".format(order.total_amount) }}đ</td>
+                        <td>
+                            <span class="badge bg-{{ order.status_color }}">
+                                {{ order.status_display }}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('order_detail', order_id=order.id) }}" 
+                               class="btn btn-sm btn-info">
+                                Chi tiết
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Product</th>
-                            <th>Price</th>
-                            <th>Quantity</th>
-                            <th>Subtotal</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for item in order.items %}
-                        <tr>
-                            <td>{{ item.product.name }}</td>
-                            <td>${{ "%.2f"|format(item.price) }}</td>
-                            <td>{{ item.quantity }}</td>
-                            <td>${{ "%.2f"|format(item.price * item.quantity) }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="3" class="text-end"><strong>Total:</strong></td>
-                            <td><strong>${{ "%.2f"|format(order.total_amount) }}</strong></td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-            <p class="mb-0">Status: <span class="badge bg-info">{{ order.status }}</span></p>
+    {% else %}
+        <div class="text-center py-5">
+            <h4>Bạn chưa có đơn hàng nào</h4>
+            <a href="{{ url_for('index') }}" class="btn btn-primary mt-3">Tiếp tục mua sắm</a>
         </div>
-    </div>
-    {% endfor %}
-{% else %}
-    <p>You haven't placed any orders yet.</p>
-{% endif %}
+    {% endif %}
+</div>
 {% endblock %}

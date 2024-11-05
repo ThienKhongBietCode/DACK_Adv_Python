@@ -1,33 +1,32 @@
+<!-- product_detail.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ product.name }}</title>
+    <title>Chi tiết sản phẩm</title>
+    <link rel="stylesheet" href="path/to/your/css/styles.css">
 </head>
 <body>
     <h1>{{ product.name }}</h1>
     <p>{{ product.description }}</p>
     <p>Giá: {{ product.price }} VNĐ</p>
+    <p>Còn lại: {{ product.stock }} sản phẩm</p>
 
-    {% if product.image_url %}
-    <img src="{{ url_for('static', filename='uploads/' + product.image_url) }}" alt="{{ product.name }}" style="max-width: 300px;">
-    {% else %}
-        <p>Không có hình ảnh cho sản phẩm này.</p>
-    {% endif %}
+    <form action="{{ url_for('add_to_cart', product_id=product.id) }}" method="POST">
+        <label for="quantity">Số lượng:</label>
+        <input type="number" id="quantity" name="quantity" min="1" max="{{ product.stock }}" value="1" required>
+        <button type="submit">Thêm vào giỏ hàng</button>
+    </form>
 
-    <h3>Related Products</h3>
-    <ul>
-        {% for related_product in related_products %}
-            <li>
-                <a href="{{ url_for('product_detail', product_id=related_product.id) }}">
-                    {{ related_product.name }}
-                </a>
-            </li>
-        {% endfor %}
-    </ul>
-
-    <a href="{{ url_for('add_to_cart', product_id=product.id) }}">Thêm vào giỏ hàng</a>
-    <a href="{{ url_for('index') }}">Quay lại</a>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul>
+            {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
 </body>
 </html>
