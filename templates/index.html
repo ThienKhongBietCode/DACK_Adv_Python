@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Welcome to Fashion Shop</h1>
+<h1>Welcome to BIA Store</h1>
 <div class="row">
     {% for product in products.items %}
     <div class="col-12 col-md-6 col-lg-3 mb-4">
@@ -14,7 +14,8 @@
             <div class="card-body">
                 <h5 class="card-title">{{ product.name }}</h5>
                 <p class="card-text">{{ product.description }}</p>
-                <p class="card-text"><strong>Price: ${{ "%.2f"|format(product.price) }}</strong></p>
+                <p class="card-text"><strong>Giá: {{ "{:,.0f}đ".format(product.price) }}</strong></p>
+
 
                 {% if current_user.is_authenticated and not current_user.is_admin %}
                 <form action="{{ url_for('add_to_cart', product_id=product.id) }}" method="post">

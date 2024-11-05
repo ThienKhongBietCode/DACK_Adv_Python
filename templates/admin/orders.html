@@ -1,0 +1,61 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>Quản Lý Đơn Hàng</h1>
+
+    <form method="get" class="mb-4">
+        <div class="form-group">
+            <label for="status">Trạng thái đơn hàng:</label>
+            <select name="status" id="status" class="form-control" onchange="this.form.submit()">
+                <option value="">Tất cả</option>
+                <option value="pending" {% if request.args.get('status') == 'pending' %}selected{% endif %}>Đang chờ</option>
+                <option value="completed" {% if request.args.get('status') == 'completed' %}selected{% endif %}>Hoàn thành</option>
+                <option value="canceled" {% if request.args.get('status') == 'canceled' %}selected{% endif %}>Đã hủy</option>
+                <!-- Thêm các trạng thái khác nếu cần -->
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Lọc</button>
+    </form>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID Đơn Hàng</th>
+                <th>Người Đặt</th>
+                <th>Trạng thái</th>
+                <th>Ngày Tạo</th>
+                <th>Tổng Tiền</th>
+                <th>Hành Động</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders.items %}
+            <tr>
+                <td>{{ order.id }}</td>
+                <td>{{ order.customer_name }}</td>
+                <td>{{ order.status }}</td>
+                <td>{{ order.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td>{{ order.total_amount }}</td>
+                <td>
+                    <a href="{{ url_for('admin_order_detail', order_id=order.id) }}" class="btn btn-info">Chi Tiết</a>
+                    
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="pagination">
+        {% if orders.has_prev %}
+        <a href="{{ url_for('admin_orders', page=orders.prev_num, status=request.args.get('status')) }}" class="btn btn-secondary">Trước</a>
+        {% endif %}
+
+        <span>Trang {{ orders.page }} trên {{ orders.pages }}</span>
+
+        {% if orders.has_next %}
+        <a href="{{ url_for('admin_orders', page=orders.next_num, status=request.args.get('status')) }}" class="btn btn-secondary">Tiếp Theo</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -593,4 +593,4 @@ def admin_update_order_status(order_id):
     return redirect(url_for('admin_order_detail', order_id=order_id))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True) 

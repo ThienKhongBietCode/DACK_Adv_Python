@@ -17,7 +17,8 @@
             {% for product in products.items %}
             <tr>
                 <td>{{ product.name }}</td>
-                <td>${{ "%.2f"|format(product.price) }}</td>
+                <td>{{ "{:,.0f}".format(product.price) }} đ</td>
+
                 <td>{{ product.category.name }}</td>
                 <td>{{ product.stock }}</td>
                 <td>

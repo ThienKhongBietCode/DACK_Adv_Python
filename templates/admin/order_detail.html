@@ -1,0 +1,59 @@
+{% extends 'admin/layout.html' %}
+
+{% block content %}
+<div class="container my-5">
+    <h1>Chi tiết Đơn Hàng</h1>
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title">Đơn hàng #{{ order.id }}</h5>
+        </div>
+        <div class="card-body">
+            <p>Tên khách hàng: {{ order.user.username }}</p>
+            <p>Địa chỉ giao hàng: {{ order.shipping_address }}</p>
+            <p>Số điện thoại: {{ order.phone }}</p>
+            <p>Ghi chú: {{ order.note }}</p>
+            <p>Trạng thái: {{ order.status }}</p>
+            <p>Tổng tiền: ${{ "%.2f"|format(order.total_amount) }}</p>
+            <p>Ngày tạo: {{ order.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+            <p>Ngày cập nhật: {{ order.updated_at.strftime('%Y-%m-%d %H:%M') }}</p>
+
+            <h3>Chi tiết sản phẩm</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Sản phẩm</th>
+                        <th>Số lượng</th>
+                        <th>Giá</th>
+                        <th>Tạm tính</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order.items %}
+                    <tr>
+                        <td>{{ item.product.name }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>${{ "%.2f"|format(order.total_amount) }}</td>
+                        <td>${{ "%.2f"|format(order.total_amount) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <form action="{{ url_for('admin_update_order_status', order_id=order.id) }}" method="post" class="d-inline-block">
+                <div class="form-group">
+                    <label for="status">Cập nhật trạng thái:</label>
+                    <select class="form-control" id="status" name="status">
+                        <option value="pending">Chờ xác nhận</option>
+                        <option value="confirmed">Đã xác nhận</option>
+                        <option value="shipping">Đang giao</option>
+                        <option value="completed">Hoàn thành</option>
+                        <option value="cancelled">Đã hủy</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Lưu</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
