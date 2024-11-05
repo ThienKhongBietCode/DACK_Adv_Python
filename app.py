@@ -344,44 +344,45 @@ def checkout():
     if not cart_items:
         flash('Giỏ hàng trống!', 'danger')
         return redirect(url_for('view_cart'))
-        
+
     if request.method == 'POST':
-    # Kiểm tra lại số lượng tồn kho
+        # Kiểm tra lại số lượng tồn kho
         for item in cart_items:
             if item.quantity > item.product.stock:
                 flash(f'Sản phẩm {item.product.name} chỉ còn {item.product.stock} trong kho!', 'danger')
                 return redirect(url_for('checkout'))
-    
-    # Tạo đơn hàng
+
+        # Tạo đơn hàng
         order = Order(
-        user_id=current_user.id,
-        shipping_address=request.form.get('address'),
-        phone=request.form.get('phone'),
-        note=request.form.get('note'),
-        total_amount=sum(item.product.price * item.quantity for item in cart_items)
+            user_id=current_user.id,
+            shipping_address=request.form.get('address'),
+            phone=request.form.get('phone'),
+            note=request.form.get('note'),
+            total_amount=sum(item.product.price * item.quantity for item in cart_items)
         )
         db.session.add(order)
-    
-    # Thêm chi tiết đơn hàng
+        db.session.flush()  # Flush the session to get the order ID
+
+        # Thêm chi tiết đơn hàng
         for cart_item in cart_items:
             order_item = OrderItem(
-                order_id=order.id,
+                order_id=order.id,  # Use the flushed order ID
                 product_id=cart_item.product_id,
                 quantity=cart_item.quantity,
                 price=cart_item.product.price
             )
             db.session.add(order_item)
-        
-        # Cập nhật số lượng tồn kho
+
+            # Cập nhật số lượng tồn kho
             cart_item.product.stock -= cart_item.quantity
-        
-        # Xóa item khỏi giỏ hàng
+
+            # Xóa item khỏi giỏ hàng
             db.session.delete(cart_item)
-    
-        db.session.commit()
+
+        db.session.commit()  # Commit the entire transaction
         flash('Đặt hàng thành công!', 'success')
         return redirect(url_for('view_orders'))
-    
+
     total = sum(item.product.price * item.quantity for item in cart_items)
     return render_template('checkout.html', cart_items=cart_items, total=total)
 
