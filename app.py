@@ -167,19 +167,37 @@ def load_user(user_id):
 @app.route('/')
 def index():
     page = request.args.get('page', 1, type=int)
-    per_page = 12  # Số sản phẩm mỗi trang
+    category_id = request.args.get('category', None, type=int)
+    min_price = request.args.get('min_price', type=float)
+    max_price = request.args.get('max_price', type=float)
+    
+    # Get all categories for the filter
     categories = Category.query.all()
-    category_id = request.args.get('category', type=int)
-    search_query = request.args.get('search', '')
     
-    products_query = Product.query
+    # Start with base query
+    query = Product.query
+    
+    # Apply category filter if specified
     if category_id:
-        products_query = products_query.filter_by(category_id=category_id)
-    if search_query:
-        products_query = products_query.filter(Product.name.ilike(f'%{search_query}%'))
+        query = query.filter_by(category_id=category_id)
+        selected_category_name = Category.query.get(category_id).name
+    else:
+        selected_category_name = None
     
-    products = products_query.paginate(page=page, per_page=per_page, error_out=False)
-    return render_template('index.html', products=products, categories=categories)
+    # Apply price filters if specified
+    if min_price is not None:
+        query = query.filter(Product.price >= min_price)
+    if max_price is not None:
+        query = query.filter(Product.price <= max_price)
+    
+    # Paginate the results
+    products = query.paginate(page=page, per_page=8, error_out=False)
+    
+    return render_template('index.html',
+                         products=products,
+                         categories=categories,
+                         selected_category=category_id,
+                         selected_category_name=selected_category_name)
 
 @app.route('/product/<int:product_id>')
 def product_detail(product_id):
