@@ -18,31 +18,31 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('index') }}">Home</a>
+                        <a class="nav-link" href="{{ url_for('index') }}">Trang chủ</a>
                     </li>
                     {% if current_user.is_authenticated %}
                         {% if current_user.is_admin %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('admin_dashboard') }}">Admin Dashboard</a>
+                            <a class="nav-link" href="{{ url_for('admin_dashboard') }}">Trang chính</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('admin_products') }}">Manage Products</a>
+                            <a class="nav-link" href="{{ url_for('admin_products') }}">Sản phẩm</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('admin_categories') }}">Manage Categories</a>
+                            <a class="nav-link" href="{{ url_for('admin_categories') }}">Phân loại</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('admin_orders') }}">Manage Orders</a>
+                            <a class="nav-link" href="{{ url_for('admin_orders') }}">Quản lý</a>
                         </li>
                         {% else %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('view_cart') }}">Cart</a>
+                            <a class="nav-link" href="{{ url_for('view_cart') }}">Giỏ hàng</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('view_orders') }}">My Orders</a>
+                            <a class="nav-link" href="{{ url_for('view_orders') }}">Đơn hàng của tôi</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('profile') }}">Profile</a>
+                            <a class="nav-link" href="{{ url_for('profile') }}">Tài khoản</a>
                         </li>
                         {% endif %}
                     {% endif %}
@@ -50,14 +50,14 @@
                 <ul class="navbar-nav">
                     {% if current_user.is_authenticated %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                            <a class="nav-link" href="{{ url_for('logout') }}">Thoát</a>
                         </li>
                     {% else %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+                            <a class="nav-link" href="{{ url_for('login') }}">Đăng nhập</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('register') }}">Register</a>
+                            <a class="nav-link" href="{{ url_for('register') }}">Đăng ký</a>
                         </li>
                     {% endif %}
                 </ul>

@@ -1,17 +1,17 @@
 {% extends "base.html" %}
-{% block title %}Admin Dashboard{% endblock %}
+{% block title %}Quản lý{% endblock %}
 {% block content %}
-<h1>Admin Dashboard</h1>
-<p>Total Users: {{ total_users }}</p>
-<p>Total Orders: {{ total_orders }}</p>
-<p>Total Products: {{ total_products }}</p>
-<h2>Recent Orders</h2>
+<h1>Quản lý</h1>
+<p>Số lượng người dùng: {{ total_users }}</p>
+<p>Tổng đơn hàng: {{ total_orders }}</p>
+<p>Tổng sản phẩm: {{ total_products }}</p>
+<h2>Đơn đặt gần đây</h2>
 <ul>
     {% for order in recent_orders %}
         <li>Order #{{ order.id }} by {{ order.user.username }} - {{ order.status }}</li>
     {% endfor %}
 </ul>
-<h2>Low Stock Products</h2>
+<h2>Sản phẩm sắp hết</h2>
 <ul>
     {% for product in low_stock_products %}
         <li>{{ product.name }} - Stock: {{ product.stock }}</li>

@@ -60,6 +60,8 @@
         <label for="quantity" class="quantity-label">Số lượng:</label>
         <input type="number" id="quantity" name="quantity" min="1" max="{{ product.stock }}" value="1" class="form-control mr-3" style="width: 80px;" required>
         <button type="submit" class="btn add-to-cart-btn">Thêm vào giỏ hàng</button>
+        <a href="javascript:history.back()" class="btn btn-secondary mb-3">Quay về</a>
+        
     </form>
 
     {% with messages = get_flashed_messages(with_categories=true) %}
