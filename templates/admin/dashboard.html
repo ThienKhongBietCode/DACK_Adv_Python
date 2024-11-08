@@ -8,13 +8,13 @@
 <h2>Đơn đặt gần đây</h2>
 <ul>
     {% for order in recent_orders %}
-        <li>Order #{{ order.id }} by {{ order.user.username }} - {{ order.status }}</li>
+        <li>Đơn #{{ order.id }} đặt bởi {{ order.user.username }} - {{ order.status }}</li>
     {% endfor %}
 </ul>
 <h2>Sản phẩm sắp hết</h2>
 <ul>
     {% for product in low_stock_products %}
-        <li>{{ product.name }} - Stock: {{ product.stock }}</li>
+        <li>{{ product.name }} - Tồn kho: {{ product.stock }}</li>
     {% endfor %}
 </ul>
 {% endblock %}

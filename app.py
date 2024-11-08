@@ -148,6 +148,9 @@ class Order(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
     items = db.relationship('OrderItem', backref='order', lazy=True)
+    @property
+    def customer_name(self):
+        return self.user.full_name.split()[0] if self.user and self.user.full_name else "Chưa cập nhật"
 
 class OrderItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -582,15 +585,12 @@ def admin_delete_category(category_id):
 @app.route('/admin/orders')
 @admin_required
 def admin_orders():
-    page = request.args.get('page', 1, type=int)
-    status = request.args.get('status')
+    # Lấy tất cả đơn hàng và join với bảng User để lấy thông tin người dùng
+    orders = db.session.query(Order, User.full_name)\
+        .join(User, Order.user_id == User.id, isouter=True)\
+        .order_by(Order.id.desc())\
+        .all()
     
-    query = Order.query
-    if status:
-        query = query.filter_by(status=status)
-        
-    orders = query.order_by(Order.created_at.desc())\
-        .paginate(page=page, per_page=20)
     return render_template('admin/orders.html', orders=orders)
 
 @app.route('/admin/order/<int:order_id>')
@@ -600,13 +600,20 @@ def admin_order_detail(order_id):
     return render_template('admin/order_detail.html', order=order)
 
 @app.route('/admin/order/status/<int:order_id>', methods=['POST'])
-@admin_required
 def admin_update_order_status(order_id):
     order = Order.query.get_or_404(order_id)
     status = request.form.get('status')
-    if status in ['Chờ xác nhận', 'Đã xác nhận', 'Đang giao', 'Hoàn thành', 'Hủy đơn']:
+    
+    # List of allowed statuses
+    allowed_statuses = ['Chờ xác nhận', 'Đã xác nhận', 'Đang giao', 'Đã hoàn thành', 'Hủy đơn']
+    
+    if status in allowed_statuses:
         order.status = status
         db.session.commit()
+        flash('Cập nhật trạng thái đơn hàng thành công!', 'success')
+    else:
+        flash('Trạng thái không hợp lệ.', 'error')
+    
     return redirect(url_for('admin_order_detail', order_id=order_id))
 
 if __name__ == '__main__':
