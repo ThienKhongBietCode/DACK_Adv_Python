@@ -604,10 +604,9 @@ def admin_order_detail(order_id):
 def admin_update_order_status(order_id):
     order = Order.query.get_or_404(order_id)
     status = request.form.get('status')
-    if status in ['pending', 'confirmed', 'shipping', 'completed', 'cancelled']:
+    if status in ['Chờ xác nhận', 'Đã xác nhận', 'Đang giao', 'Hoàn thành', 'Hủy đơn']:
         order.status = status
         db.session.commit()
-        flash('Cập nhật trạng thái đơn hàng thành công!', 'success')
     return redirect(url_for('admin_order_detail', order_id=order_id))
 
 if __name__ == '__main__':
