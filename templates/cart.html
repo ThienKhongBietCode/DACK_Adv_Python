@@ -21,7 +21,7 @@
                     {% for item in cart_items %}
                     <tr id="cart-item-{{ item.id }}">
                         <td>
-                            <img src="{{ item.product.image_url }}" alt="{{ item.product.name }}" class="img-thumbnail" style="width: 50px;">
+                            <img src="{{ url_for('static', filename='uploads/' + item.product.image_url) }}" alt="{{ item.product.name }}" style="width: 100px;">
                             {{ item.product.name }}
                         </td>
                         <td>{{ "{:,.0f}".format(item.product.price) }}đ</td>
@@ -36,7 +36,7 @@
                         <td>
                             <a href="{{ url_for('remove_from_cart', item_id=item.id) }}" 
                                class="btn btn-sm btn-danger">
-                                <i class="fas fa-trash"></i>
+                                <i class="fas fa-trash">Xóa</i>
                             </a>
                         </td>
                     </tr>
