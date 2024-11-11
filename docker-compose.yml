@@ -4,7 +4,7 @@ services:  # Khai báo các dịch vụ trong ứng dụng
   web:  # Dịch vụ web
     build: .  # Xây dựng hình ảnh từ thư mục hiện tại
     ports:  # Cấu hình cổng
-      - "5001:5001"  # Bản đồ cổng 5001 của máy chủ với cổng 5001 của container
+      - "5000:5000"  # Bản đồ cổng 5001 của máy chủ với cổng 5001 của container
     volumes:  # Gắn kết các thư mục
       - .:/app  # Gắn thư mục hiện tại vào thư mục /app trong container
     environment:  # Biến môi trường cho dịch vụ web
