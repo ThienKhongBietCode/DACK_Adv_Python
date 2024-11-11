@@ -11,7 +11,7 @@ from wtforms import StringField, FloatField, TextAreaField, DecimalField, Intege
 from wtforms.validators import DataRequired, NumberRange
 from flask_wtf.file import FileField, FileAllowed
 from flask import current_app
-
+from flask_migrate import Migrate
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///shop.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
