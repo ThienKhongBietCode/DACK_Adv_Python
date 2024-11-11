@@ -610,5 +610,5 @@ def admin_update_order_status(order_id):
         flash('Cập nhật trạng thái đơn hàng thành công!', 'success')
     return redirect(url_for('admin_order_detail', order_id=order_id))
 
-if __name__ == '__main__':
-    app.run(debug=True) 
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
